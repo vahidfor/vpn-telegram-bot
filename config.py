@@ -54,6 +54,16 @@ ADMIN_VIEW_PENDING_REQUESTS = 127 # View pending purchase requests
 ADMIN_VIEW_APPROVED_REQUESTS = 128 # View approved purchase requests
 ADMIN_PROCESS_REQUEST = 129 # Process a specific purchase request
 
+# --- NEW STATES FOR ADMIN-USER CHAT AND GUIDED SERVICE DELIVERY ---
+ADMIN_CHATTING_WITH_USER = 200 # Admin is actively chatting with a specific user
+USER_CHATTING_WITH_ADMIN = 201 # User is actively chatting with admin (after support message reply)
+ADMIN_DELIVERING_SERVICE_CONFIRM_REQUEST = 202 # Admin is confirming the request before delivery
+ADMIN_DELIVERING_SERVICE_CHOOSE_METHOD = 203 # Admin choosing to deliver existing or new content
+ADMIN_DELIVERING_SERVICE_CHOOSE_EXISTING = 204 # Admin choosing which existing service to send
+ADMIN_DELIVERING_SERVICE_RECEIVING_CONTENT = 205 # Admin sending new content (text/file)
+ADMIN_DELIVERING_SERVICE_RECEIVING_FILE = 206 # Admin sending new file content
+ADMIN_DELIVERING_SERVICE_RECEIVING_TEXT = 207 # Admin sending new text content
+
 
 # Bot configuration
 ADMIN_ID = int(os.getenv("ADMIN_TELEGRAM_ID", "0"))

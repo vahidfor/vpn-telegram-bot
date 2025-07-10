@@ -436,6 +436,14 @@ def add_support_message(user_id: int, message_text: str) -> bool:
         except sqlite3.Error:
             return False
 
+def get_support_message_by_id(message_id: int) -> Optional[Dict[str, Any]]:
+    """Retrieve a support message by its ID."""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM support_messages WHERE id = ?", (message_id,))
+        msg = cursor.fetchone()
+        return dict(msg) if msg else None
+
 def get_support_messages(answered: Optional[bool] = None) -> List[Dict[str, Any]]:
     """Get support messages, optionally filtered by answered status."""
     with get_db() as conn:
@@ -460,21 +468,21 @@ def mark_support_message_answered(message_id: int) -> bool:
 
 # --- Purchase Requests ---
 
-def add_purchase_request(user_id: int, account_type: str, status: str = 'pending') -> bool:
-    """Add a new purchase request."""
+def add_purchase_request(user_id: int, account_type: str, requested_service: str, requested_device: str, status: str = 'pending') -> int:
+    """Add a new purchase request and return its ID."""
     with get_db() as conn:
         cursor = conn.cursor()
         try:
             current_date = datetime.datetime.now().isoformat()
             cursor.execute(
-                """INSERT INTO purchase_requests (user_id, account_type, request_date, status)
-                   VALUES (?, ?, ?, ?)""",
-                (user_id, account_type, current_date, status)
+                """INSERT INTO purchase_requests (user_id, account_type, requested_service, requested_device, request_date, status)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (user_id, account_type, requested_service, requested_device, current_date, status)
             )
             conn.commit()
-            return True
+            return cursor.lastrowid # Return the ID of the new row
         except sqlite3.Error:
-            return False
+            return 0 # Indicate failure
 
 def get_purchase_request_by_id(request_id: int) -> Optional[Dict[str, Any]]:
     """Retrieve a purchase request by its ID."""
